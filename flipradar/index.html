@@ -1062,15 +1062,30 @@ footer{
 function handleSignup(){
   const name  = document.getElementById('fname').value.trim();
   const email = document.getElementById('femail').value.trim();
+  const niche = document.getElementById('fniche').value.trim();
   if(!name||!email){alert('Please fill in your name and email!');return;}
+
   const btn = document.querySelector('.form-btn');
-  btn.textContent = 'Taking you to checkout...';
+  btn.textContent = 'Submitting...';
   btn.style.opacity = '0.6';
   btn.disabled = true;
-  document.getElementById('fsuccess').style.display = 'block';
-  setTimeout(() => {
+
+  fetch('https://formspree.io/f/xojynbvq', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({name, email, niche})
+  })
+  .then(() => {
+    document.getElementById('fsuccess').style.display = 'block';
+    btn.textContent = 'Taking you to checkout...';
+    setTimeout(() => {
+      window.location.href = 'https://buy.stripe.com/7sYdR29TM7N5b9Wecua3u00';
+    }, 1500);
+  })
+  .catch(() => {
+    // Even if Formspree fails, still redirect to Stripe
     window.location.href = 'https://buy.stripe.com/7sYdR29TM7N5b9Wecua3u00';
-  }, 1000);
+  });
 }
 
 function updateCalc(){
