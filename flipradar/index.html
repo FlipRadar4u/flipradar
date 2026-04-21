@@ -722,6 +722,14 @@ footer{
   <p class="hero-note">
     <span>7-day free trial</span> · <span>Cancel anytime</span> · <span>£9.99/month after trial</span>
   </p>
+  <div style="margin-top:20px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--muted)">
+    <div style="display:flex;margin-right:4px">
+      <div style="width:24px;height:24px;border-radius:50%;background:#1a2a1a;border:2px solid var(--bg);margin-right:-8px;display:flex;align-items:center;justify-content:center;font-size:10px">👤</div>
+      <div style="width:24px;height:24px;border-radius:50%;background:#1a2a20;border:2px solid var(--bg);margin-right:-8px;display:flex;align-items:center;justify-content:center;font-size:10px">👤</div>
+      <div style="width:24px;height:24px;border-radius:50%;background:#0d1f0d;border:2px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:10px">👤</div>
+    </div>
+    <span><strong id="memberCount" style="color:var(--green)">0</strong> resellers already making money</span>
+  </div>
 </div>
 
 <!-- TICKER -->
@@ -1111,6 +1119,141 @@ function toggleFaq(el){
 }
 
 updateCalc();
+
+// ── Social proof counter ──────────────────────────────────────────────────────
+function animateCounter(el, target, duration) {
+  let start = 0;
+  const step = target / (duration / 16);
+  const timer = setInterval(() => {
+    start += step;
+    if(start >= target){ start = target; clearInterval(timer); }
+    el.textContent = Math.floor(start).toLocaleString();
+  }, 16);
+}
+
+const counterEl = document.getElementById('memberCount');
+if(counterEl){
+  const obs = new IntersectionObserver(entries => {
+    if(entries[0].isIntersecting){
+      animateCounter(counterEl, 284, 1500);
+      obs.disconnect();
+    }
+  });
+  obs.observe(counterEl);
+}
+
+// ── Sticky CTA bar ────────────────────────────────────────────────────────────
+const stickyBar = document.getElementById('stickyBar');
+window.addEventListener('scroll', () => {
+  if(window.scrollY > 600){
+    stickyBar.style.transform = 'translateY(0)';
+  } else {
+    stickyBar.style.transform = 'translateY(100%)';
+  }
+});
+
+// ── Exit intent popup ─────────────────────────────────────────────────────────
+let exitShown = false;
+document.addEventListener('mouseleave', e => {
+  if(e.clientY < 10 && !exitShown){
+    exitShown = true;
+    document.getElementById('exitPopup').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+});
+
+function closeExit(){
+  document.getElementById('exitPopup').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// Close on background click
+document.getElementById('exitPopup').addEventListener('click', function(e){
+  if(e.target === this) closeExit();
+});
 </script>
+
+<!-- STICKY CTA BAR -->
+<div id="stickyBar" style="
+  position:fixed;bottom:0;left:0;right:0;
+  background:#00c853;
+  padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  z-index:200;
+  transform:translateY(100%);
+  transition:transform 0.3s ease;
+  flex-wrap:wrap;gap:12px;
+">
+  <div style="font-family:'Plus Jakarta Sans',sans-serif">
+    <div style="font-size:15px;font-weight:700;color:#000">Ready to start flipping?</div>
+    <div style="font-size:13px;color:rgba(0,0,0,0.6)">7-day free trial · £9.99/month after · Cancel anytime</div>
+  </div>
+  <a href="https://buy.stripe.com/7sYdR29TM7N5b9Wecua3u00" target="_blank" style="
+    background:#000;color:#00c853;
+    padding:12px 28px;border-radius:8px;
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:15px;font-weight:700;
+    text-decoration:none;white-space:nowrap;
+    transition:opacity 0.15s;
+  ">Start free trial →</a>
+</div>
+
+<!-- EXIT INTENT POPUP -->
+<div id="exitPopup" style="
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.75);
+  z-index:300;
+  align-items:center;justify-content:center;
+  padding:24px;
+">
+  <div style="
+    background:#111314;
+    border:1px solid rgba(0,200,83,0.3);
+    border-radius:20px;
+    padding:40px;
+    max-width:480px;
+    width:100%;
+    text-align:center;
+    position:relative;
+    font-family:'Plus Jakarta Sans',sans-serif;
+  ">
+    <button onclick="closeExit()" style="
+      position:absolute;top:16px;right:16px;
+      background:transparent;border:none;
+      color:#5a6370;font-size:20px;cursor:pointer;
+      line-height:1;
+    ">✕</button>
+
+    <div style="font-size:40px;margin-bottom:12px">⚡</div>
+    <h2 style="font-size:24px;font-weight:800;color:#f1f3f5;margin-bottom:8px;letter-spacing:-0.03em">Wait — don't miss out</h2>
+    <p style="font-size:15px;color:#8a9099;margin-bottom:24px;line-height:1.6">FlipRadar finds deals like a £180 iPhone listed for £95. Your 7-day free trial costs nothing — try it before you decide.</p>
+
+    <div style="background:#191b1d;border:1px solid rgba(0,200,83,0.2);border-radius:12px;padding:16px;margin-bottom:24px">
+      <div style="font-size:13px;color:#5a6370;margin-bottom:4px">example deal alert</div>
+      <div style="font-size:14px;font-weight:600;color:#f1f3f5;margin-bottom:6px">iPhone 13 128GB Unlocked — Very Good</div>
+      <div style="display:flex;justify-content:center;gap:16px;font-size:13px;color:#8a9099">
+        <span>Listed: <strong style="color:#f1f3f5">£145</strong></span>
+        <span>Avg sold: £310</span>
+        <span style="color:#00c853;font-weight:700">+£112 profit</span>
+      </div>
+    </div>
+
+    <a href="https://buy.stripe.com/7sYdR29TM7N5b9Wecua3u00" target="_blank" style="
+      display:block;
+      background:#00c853;color:#000;
+      padding:14px;border-radius:10px;
+      font-size:16px;font-weight:700;
+      text-decoration:none;margin-bottom:12px;
+      transition:opacity 0.15s;
+    ">Start my free trial →</a>
+    <button onclick="closeExit()" style="
+      background:transparent;border:none;
+      color:#5a6370;font-size:13px;cursor:pointer;
+      font-family:'Plus Jakarta Sans',sans-serif;
+    ">No thanks, I don't want to find deals</button>
+  </div>
+</div>
+
 </body>
 </html>
